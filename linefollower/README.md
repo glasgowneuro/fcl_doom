@@ -17,6 +17,9 @@ QT5 development libraries with openGL
 QT5 version of ENKI:
 https://github.com/glasgowneuro/enki
 
+The Feedback Closed Loop Learning Library:
+https://github.com/glasgowneuro/feedback_closed_loop_learning
+
 ## Compilation
 
 `qmake` and `make` to compile it.
