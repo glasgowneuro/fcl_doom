@@ -31,6 +31,6 @@ If you wish to experiment further:
 ----------------------------------
 There are a number of *.cfg files here - if you want to run deathmatch in the way described above, copy _vizdoomNetwork.cfg to _vizdoom.cfg. Assuming the host is already running, running run_agentDFL.py will then attempt to connect and start a match. It's crucial that all bots, and the host, are using the same Doom map. This is specified in their own .cfg files.  
 
-There are a number of edited Doom maps to play around with - the ones called basic-multi* have been edited to have large amounts of ammo, so that the enemies do not run out of ammo and behave strangely, and also have multiple spawn positions to help increase the variability of the visual inputs. 
+You can use any of the .wad files that come with VizDoom, but we recommend editing them to a) have more spawn points so that the bot gets a better randomisation of starting position and increase generalisation of learning, and b) to increase the amount of ammo available, otherwise the enemy can run out of ammo and start behaving strangely. We used http://www.doombuilder.com/ for this. 
 
 If you want to change the actions available to the bot, you need to edit config/config.cfg. At the moment, the bot only rotates in the plane, and shoots, so there is lots of scope for improvement!
