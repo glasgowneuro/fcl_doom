@@ -5,11 +5,9 @@ import tensorflow as tf
 import sys
 import os
 sys.path.append('./agent')
-sys.path.append("./deep_feedback_learning/")
+sys.path.append("../.")
 from agent.doom_simulator import DoomSimulator
-from agent.agent import Agent
-import deep_feedback_learning
-from deep_feedback_learning import DeepFeedbackLearning
+import feedback_closedloop_learning
 import threading
 from matplotlib import pyplot as plt
 from datetime import datetime
@@ -31,26 +29,20 @@ maxT = 10
 outFile = open("/home/paul/Dev/GameAI/vizdoom_cig2017/DFLOutput.txt", "w")
 wtdistFile = open("/home/paul/Dev/GameAI/vizdoom_cig2017/wtDist.txt", "w")
 
-deepBP = DeepFeedbackLearning(width * height, nHidden, nOut, nFiltersInput, nFiltersHidden, minT, maxT)
+FCLNet = feedback_closedloop_learning.FeedbackClosedloopLearning(width * height, nHidden, nOut, nFiltersInput, nFiltersHidden, minT, maxT)
 # init the weights
-# deepBP.getLayer(0).setConvolution(width, height)
-deepBP.initWeights(1., deep_feedback_learning.Neuron.MAX_OUTPUT_POSITIVE)
+# FCLNet.getLayer(0).setConvolution(width, height)
+FCLNet.initWeights(1., feedback_closedloop_learning.Neuron.MAX_OUTPUT_RANDOM)
 print ("Initialised weights")
 for i in range(len(nHidden)):
     print ("hidden ", i, ": ", nHidden[i], file=outFile)
 #print("learning rate: ", learningRate, file=outFile)
 
-deepBP.setBias(1)
-deepBP.setMomentum(0.5)
+FCLNet.setBias(1)
+FCLNet.setMomentum(0.5)
 random.seed(datetime.now())
-deepBP.seedRandom(np.random.randint(low=0, high=999999))
-deepBP.setUseDerivative(0)
-
-
-#deepBP.setActivationFunction(deep_feedback_learning.Neuron.TANH)
-#deepBP.getLayer(0).setNormaliseWeights(deep_feedback_learning.Layer.WEIGHT_NORM_NEURON)
-#deepBP.getLayer(1).setNormaliseWeights(deep_feedback_learning.Layer.WEIGHT_NORM_LAYER)
-
+FCLNet.seedRandom(np.random.randint(low=0, high=999999))
+FCLNet.setUseDerivative(0)
 
 preprocess_input_images = lambda x: x / 255. - 0.5
 
@@ -65,30 +57,28 @@ edge = np.array((
 	[0, 1, 0]), dtype="int")
 
 
-
-
 plt.ion()
 plt.show()
 ln1 = False
 ln2 = [False,False,False,False]
 
 def getWeights2D(neuron):
-    n_neurons = deepBP.getLayer(0).getNneurons()
-    n_inputs = deepBP.getLayer(0).getNeuron(neuron).getNinputs()
+    n_neurons = FCLNet.getLayer(0).getNneurons()
+    n_inputs = FCLNet.getLayer(0).getNeuron(neuron).getNinputs()
     weights = np.zeros(n_inputs)
     for i in range(n_inputs):
-        if deepBP.getLayer(0).getNeuron(neuron).getMask(i):
-            weights[i] = deepBP.getLayer(0).getNeuron(neuron).getAvgWeight(i)
+        if FCLNet.getLayer(0).getNeuron(neuron).getMask(i):
+            weights[i] = FCLNet.getLayer(0).getNeuron(neuron).getAvgWeight(i)
         else:
             weights[i] = np.nan
     return weights.reshape(heightIn,widthIn)
 
 def getWeights1D(layer,neuron):
-    n_neurons = deepBP.getLayer(layer).getNneurons()
-    n_inputs = deepBP.getLayer(layer).getNeuron(neuron).getNinputs()
+    n_neurons = FCLNet.getLayer(layer).getNneurons()
+    n_inputs = FCLNet.getLayer(layer).getNeuron(neuron).getNinputs()
     weights = np.zeros(n_inputs)
     for i in range(n_inputs):
-        weights[i] = deepBP.getLayer(layer).getNeuron(neuron).getAvgWeight(i)
+        weights[i] = FCLNet.getLayer(layer).getNeuron(neuron).getAvgWeight(i)
     return weights
 
 def plotWeights():
@@ -102,19 +92,19 @@ def plotWeights():
             ln1.remove()
         plt.figure(1)
         w1 = getWeights2D(0)
-        for i in range(1,deepBP.getLayer(0).getNneurons()):
+        for i in range(1,FCLNet.getLayer(0).getNneurons()):
             w2 = getWeights2D(i)
             w1 = np.where(np.isnan(w2),w1,w2)
         ln1 = plt.imshow(w1,cmap='gray')
         plt.draw()
         plt.pause(0.1)
 
-        for j in range(1,deepBP.getNumHidLayers()+1):
+        for j in range(1,FCLNet.getNumHidLayers()+1):
             if ln2[j]:
                 ln2[j].remove()
             plt.figure(j+1)
-            w1 = np.zeros( (deepBP.getLayer(j).getNneurons(),deepBP.getLayer(j).getNeuron(0).getNinputs()) )
-            for i in range(deepBP.getLayer(j).getNneurons()):
+            w1 = np.zeros( (FCLNet.getLayer(j).getNneurons(),FCLNet.getLayer(j).getNeuron(0).getNinputs()) )
+            for i in range(FCLNet.getLayer(j).getNneurons()):
                 w1[i,:] = getWeights1D(j,i)
             ln2[j] = plt.imshow(w1,cmap='gray')
             plt.draw()
@@ -177,7 +167,7 @@ def getMaxColourPos(img, colour, step):
 
 
 def savePosImage(curr_step, centre, x1, y1, x2, y2, _img, myFile, width, height):
-    print ("img shape: ", img2.shape)
+#    print ("img shape: ", img2.shape)
     myFile.write("/home/paul/tmp/Images/" + str(curr_step) + ".jpg"
                  + " 1"
                  + " " + str(x1) + " " + str(y1)
@@ -199,7 +189,7 @@ def saveNegImage(curr_step, img2, myFile, width, height):
 
 def main(learning_rate_):
     learningRate = float(learning_rate_)
-    deepBP.setLearningRate(learningRate)
+    FCLNet.setLearningRate(learningRate)
 
     print("learning rate ", learningRate, file=outFile)
 
@@ -209,41 +199,10 @@ def main(learning_rate_):
     simulator_args['resolution'] = (widthIn,heightIn)
     simulator_args['frame_skip'] = 1
     simulator_args['color_mode'] = 'RGB24'
-    simulator_args['game_args'] = "+name ICO +colorset 7"
-
-    ## Agent
-    agent_args = {}
-
-    # preprocessing
-    preprocess_input_images = lambda x: x / 255. - 0.5
-    agent_args['preprocess_input_images'] = lambda x: x / 255. - 0.5
-    agent_args['preprocess_input_measurements'] = lambda x: x / 100. - 0.5
-    agent_args['num_future_steps'] = 6
-    pred_scale_coeffs = np.expand_dims(
-        (np.expand_dims(np.array([8., 40., 1.]), 1) * np.ones((1, agent_args['num_future_steps']))).flatten(), 0)
-    agent_args['meas_for_net_init'] = range(3)
-    agent_args['meas_for_manual_init'] = range(3, 16)
-    agent_args['resolution'] = (width,height)
-    # just use grayscale for nnet inputs
-    agent_args['num_channels'] = 1
+    simulator_args['game_args'] = "+name FCL +colorset 7"
 
 
-    # net parameters
-    agent_args['net_type'] = "fc"
-#    agent_args['net_type'] = "conv"
-    agent_args['conv_params'] = np.array([(16, 5, 4), (32, 3, 2), (64, 3, 2), (128, 3, 2)],
-                                         dtype=[('out_channels', int), ('kernel', int), ('stride', int)])
-    agent_args['fc_img_params'] = np.array([(128,)], dtype=[('out_dims', int)])
-    agent_args['fc_meas_params'] = np.array([(128,), (128,), (128,)], dtype=[('out_dims', int)])
-    agent_args['fc_joint_params'] = np.array([(256,), (256,), (-1,)], dtype=[('out_dims', int)])
-    agent_args['target_dim'] = agent_args['num_future_steps'] * len(agent_args['meas_for_net_init'])
-    agent_args['n_actions'] = 7
-
-    # experiment arguments
-    agent_args['test_objective_params'] = (np.array([5, 11, 17]), np.array([1., 1., 1.]))
-    agent_args['history_length'] = 3
-    agent_args['history_length_ico'] = 3
-    historyLen = agent_args['history_length']
+    historyLen = 3
     print ("HistoryLen: ", historyLen)
 
     print('starting simulator')
@@ -252,33 +211,8 @@ def main(learning_rate_):
 
     print('started simulator')
 
-    agent_args['state_imgs_shape'] = (
-    historyLen * num_channels, simulator.resolution[1], simulator.resolution[0])
-
-    agent_args['n_ffnet_input'] = (agent_args['resolution'][0]*agent_args['resolution'][1])
-    agent_args['n_ffnet_hidden'] = np.array([50,5])
-    agent_args['n_ffnet_output'] = 1
-    agent_args['n_ffnet_act'] = 7
-    agent_args['n_ffnet_meas'] = simulator.num_meas
-    agent_args['learning_rate'] = 1E-4
-
     modelDir = os.path.join(os.path.expanduser("~"), "Dev/GameAI/vizdoom_cig2017/icodoom/ICO1/Models")
 
-    if 'meas_for_net_init' in agent_args:
-        agent_args['meas_for_net'] = []
-        for ns in range(historyLen):
-            agent_args['meas_for_net'] += [i + simulator.num_meas * ns for i in agent_args['meas_for_net_init']]
-        agent_args['meas_for_net'] = np.array(agent_args['meas_for_net'])
-    else:
-        agent_args['meas_for_net'] = np.arange(historyLen * simulator.num_meas)
-    if len(agent_args['meas_for_manual_init']) > 0:
-        agent_args['meas_for_manual'] = np.array([i + simulator.num_meas * (historyLen - 1) for i in
-                                                  agent_args[
-                                                      'meas_for_manual_init']])  # current timestep is the last in the stack
-    else:
-        agent_args['meas_for_manual'] = []
-
-    agent_args['state_meas_shape'] = (len(agent_args['meas_for_net']),)
 
     img_buffer = np.zeros(
         (historyLen, simulator.resolution[1], simulator.resolution[0], num_channels), dtype='uint8')
@@ -287,24 +221,6 @@ def main(learning_rate_):
     act_buffer = np.zeros((historyLen, 7))
     curr_step = 0
     term = False
-
-    print ("state_meas_shape: ", meas_buffer.shape, " == ", agent_args['state_meas_shape'])
-    print ("act_buffer_shape: ", act_buffer.shape)
-
-#    try:
-#        checkpointFile = open("Models/checkpoint")
-#        try:
-#            modelName = checkpointFile.read().splitlines()
-#            if (deepBP.loadModel(modelName[0])):
-#                print("loaded from Model file: ", modelName[0])
-#            else:
-#                print("FAILED loading from Model file: ", modelName[0])
-#        except:
-#            print("Checkpoint file contains no valid model")
-#        finally:
- #           checkpointFile.close
- #   except Exception:
- #       print("No checkpoint found...")
 
 
     diff_z = 0
@@ -319,7 +235,7 @@ def main(learning_rate_):
     updatePtsFreq = 50
     reflexGain = 1E-3
     flowGain = 0.
-    netGain = 20.
+    netGain = 40.
     reflexReduceGain = -0.05
 
     # create masks for left and right visual fields - note that these only cover the upper half of the image
@@ -346,12 +262,12 @@ def main(learning_rate_):
     netErr = np.zeros(nHidden[0])
     delta = 0.
     shoot = 0
-    wtDist = np.zeros(deepBP.getNumLayers())
+    wtDist = np.zeros(FCLNet.getNumLayers())
 
     reflexOn = False
     iter = 0
     killed = False
-#    deepBP.saveModel("Models/hack.txt")
+#    FCLNet.saveModel("Models/hack.txt")
 
     while not term:
         if curr_step < historyLen:
@@ -406,6 +322,9 @@ def main(learning_rate_):
                     if(len(bottomLeft)>0 and len(topRight)>0 and ((topRight[0] - bottomLeft[0]) < width/3) and ((topRight[1] - bottomLeft[1]) < height/2)):
                         colourSteer = bottomLeft[0] + int(0.5 * (topRight[0] - bottomLeft[0]))
                         shoot = 1
+#                        cheatInputs = np.copy(stateImg)
+#                        cv2.rectangle(cheatInputs, (bottomLeft[0], bottomLeft[1]), (topRight[0], topRight[1]), (0, 0, 255), 2)
+#                        cv2.rectangle(cheatInputs, (384, 0), (510, 128), (0, 255, 0), 3)
 #                        cv2.imwrite("/home/paul/tmp/Backup/rect-" + str(curr_step) + ".jpg", cheatInputs)
 
                     rawInputs = np.array(np.sum(stateImg, axis=2) / 3)
@@ -434,22 +353,24 @@ def main(learning_rate_):
                     meas_buff[0,:] = meas
 
 
-                    deepBP.setLearningRate(0.)
-                    deepBP.doStep(input_buff, netErr)
-                    netOut = deepBP.getOutput(0) + 0.3*deepBP.getOutput(1) + 0.1*deepBP.getOutput(2)
-                    netOut1 = deepBP.getOutput(3) + 0.3*deepBP.getOutput(4) + 0.1*deepBP.getOutput(5)
+                    FCLNet.setLearningRate(0.)
+                    FCLNet.doStep(input_buff, netErr)
+                    netOut = FCLNet.getOutput(0) + 0.3*FCLNet.getOutput(1) + 0.1*FCLNet.getOutput(2)
+                    netOut1 = FCLNet.getOutput(3) + 0.3*FCLNet.getOutput(4) + 0.1*FCLNet.getOutput(5)
 
                     netErr += reflexReduceGain * netGain * (netOut - netOut1)
 
-                    deepBP.setLearningRate(learningRate)
-                    deepBP.doStep(input_buff, netErr)
-                    netOut = deepBP.getOutput(0) + 0.3*deepBP.getOutput(1) + 0.1*deepBP.getOutput(2)
-                    netOut1 = deepBP.getOutput(3) + 0.3*deepBP.getOutput(4) + 0.1*deepBP.getOutput(5)
+                    if curr_step > 1790:
+                        FCLNet.setLearningRate(learningRate)
+
+                    FCLNet.doStep(input_buff, netErr)
+                    netOut = FCLNet.getOutput(0) + 0.3*FCLNet.getOutput(1) + 0.1*FCLNet.getOutput(2)
+                    netOut1 = FCLNet.getOutput(3) + 0.3*FCLNet.getOutput(4) + 0.1*FCLNet.getOutput(5)
 
 #                    print("%s" % (" SHOOT " if shoot == 1 else "       "), deltaDiff, delta, netOut)
 
-                    for i in range(deepBP.getNumLayers()):
-                        wtDist[i] = deepBP.getLayer(i).getWeightDistanceFromInitialWeights()
+                    for i in range(FCLNet.getNumLayers()):
+                        wtDist[i] = FCLNet.getLayer(i).getWeightDistanceFromInitialWeights()
 
                     print(curr_step, delta, netErr[0], netOut-netOut1, health, file=outFile)
                     print(' '.join(map(str, wtDist)), file=wtdistFile)
@@ -475,7 +396,7 @@ def main(learning_rate_):
 
                 if not os.path.exists("Models"):
                     os.makedirs("Models")
-#                deepBP.saveModel("Models/BP-" + str(curr_step) + ".txt")
+#                FCLNet.saveModel("Models/BP-" + str(curr_step) + ".txt")
 
                 file = open("Models/checkpoint", 'w')
                 file.write("Models/BP-" + str(curr_step) + ".txt")
