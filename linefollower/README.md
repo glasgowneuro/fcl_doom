@@ -34,7 +34,7 @@ learning rates and counts the simulation steps till success.
 
 ## Data logging
 
-There are two log files: `flog.dat` and `llog.dat`. The
+There are two log files: `flog.tsv` and `llog.tsv`. The
 data is space separated and every time step has one row.
 
 ### flog.dat
@@ -50,8 +50,11 @@ of learning and it slowly decays to zero which is logged here:
 
 `unamplified_error average_error absolute_error`
 
-Use for example `gnuplot` to plot it with:
+The script `plot_abs_error.py` plots the error signal while
+the line follower is running.
 
-```
-gnuplot> plot "llog.dat" using 3 with lines
-```
+### Weights
+
+Run the script `plotweights.py` which plots the weights while
+the line follower is running.
+

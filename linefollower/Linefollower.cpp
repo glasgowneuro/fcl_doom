@@ -78,9 +78,9 @@ public:
 	LineFollower(World *world, QWidget *parent = 0) :
 		EnkiWidget(world, parent) {
 
-		flog = fopen("flog.dat","wt");
-		llog = fopen("llog.dat","wt");
-		fcoord = fopen("coord.dat","wt");
+		flog = fopen("flog.tsv","wt");
+		llog = fopen("llog.tsv","wt");
+		fcoord = fopen("coord.tsv","wt");
 
 		// setting up the robot
 		racer = new Racer(nInputs);
@@ -142,8 +142,8 @@ public:
 		double leftGround2 = racer->groundSensorLeft2.getValue();
 		double rightGround2 = racer->groundSensorRight2.getValue();
 
-		fprintf(stderr,"%e ",racer->pos.x);
-		fprintf(fcoord,"%e %e\n",racer->pos.x,racer->pos.y);
+		fprintf(stderr,"%e\t",racer->pos.x);
+		fprintf(fcoord,"%e\t%e\n",racer->pos.x,racer->pos.y);
 		// check if we've bumped into a wall
 		if ((racer->pos.x<75) ||
 		    (racer->pos.x>(maxx-border)) ||
@@ -219,20 +219,22 @@ public:
 			qApp->quit();
 		}
 		
-		fprintf(flog,"%e %e %e ",erroramp,vL,vR);
+		fprintf(flog,"%e\t%e\t%e",erroramp,vL,vR);
 		for(int i=0;i<fcl->getNumLayers();i++) {
-			fprintf(flog,"%e ",fcl->getLayer(i)->getWeightDistanceFromInitialWeights());
+			fprintf(flog,"\t%e",fcl->getLayer(i)->getWeightDistanceFromInitialWeights());
 		}
 		fprintf(flog,"\n");
+		fflush(flog);
 		int n = 0;
-		fprintf(llog,"%e ",error);
-		fprintf(llog,"%e ",avgError);
-		fprintf(llog,"%e ",absError);
+		fprintf(llog,"%e\t",error);
+		fprintf(llog,"%e\t",avgError);
+		fprintf(llog,"%e\t",absError);
 		for(int i=0;i<fcl->getLayer(0)->getNeuron(0)->getNfilters();i++) {
-			fprintf(llog,"%e ",fcl->getLayer(0)->getNeuron(0)->getFilterOutput(n,i));
-			fprintf(llog,"%e ",fcl->getLayer(0)->getNeuron(0)->getWeight(n,i));
+			fprintf(llog,"%e\t",fcl->getLayer(0)->getNeuron(0)->getFilterOutput(n,i));
+			fprintf(llog,"%e\t",fcl->getLayer(0)->getNeuron(0)->getWeight(n,i));
 		}
 		fprintf(llog,"%e\n",fcl->getLayer(0)->getNeuron(0)->getOutput());
+		fflush(llog);
 		if ((step%100)==0) {
 			for(int i=0;i<fcl->getNumLayers();i++) {
 				char tmp[256];
