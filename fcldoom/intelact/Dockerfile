@@ -1,13 +1,5 @@
 FROM ubuntu:18.04
 
-# Cuda 7.5 with cudnn 4.0.7
-#FROM nvidia/cuda:7.5-devel
-
-#RUN echo "deb http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1404/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
-#ENV CUDNN_VERSION 4
-#RUN apt-get update && apt-get install -y --no-install-recommends \
-#            libcudnn4=4.0.7 libcudnn4-dev=4.0.7
-
 # ViZdoom dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -87,7 +79,7 @@ COPY IntelAct_track2 .
 
 
 ### Do not change this ###
-COPY cig2017.wad .
+COPY *.wad ./
 COPY _vizdoom.cfg .
 ##########################
 RUN sudo chown ${HOST_UID}:${HOST_GID} -R *

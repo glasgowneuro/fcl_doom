@@ -357,9 +357,7 @@ def main(learning_rate_):
                     netOut1 = FCLNet.getOutput(3) + 0.3*FCLNet.getOutput(4) + 0.1*FCLNet.getOutput(5)
 
                     netErr += reflexReduceGain * netGain * (netOut - netOut1)
-
-                    if curr_step > 1790:
-                        FCLNet.setLearningRate(learningRate)
+                    FCLNet.setLearningRate(learningRate)
 
                     FCLNet.doStep(input_buff, netErr)
                     netOut = FCLNet.getOutput(0) + 0.3*FCLNet.getOutput(1) + 0.1*FCLNet.getOutput(2)

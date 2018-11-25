@@ -72,7 +72,7 @@ WORKDIR ${HOME_DIR}
 
 
 COPY host.py .
-COPY cig2017.wad .
+COPY *.wad ./
 COPY _vizdoom.ini .
 RUN sudo chown ${HOST_UID}:${HOST_GID} -R *
 

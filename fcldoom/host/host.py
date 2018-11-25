@@ -10,7 +10,7 @@ MAX_MAP = 5
 MAX_PLAYERS = 15
 MAX_TIMELIMIT = 999
 DEFAULT_TIMELIMIT = 10
-WAD_FILE = "cig2017.wad"
+WAD_FILE = "basic-multispawnmultiammo1.wad"
 FRAMERATE = 35
 
 if __name__ == "__main__":

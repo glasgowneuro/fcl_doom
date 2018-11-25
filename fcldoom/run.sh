@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
 
 ERROR_PREFIX="ERROR:"
-if [[ ! -z  `which nvidia-docker`  ]]
+if [[ ! -z  `which docker`  ]]
 then
-    DOCKER_CMD=nvidia-docker
-elif [[ ! -z  `which docker`  ]]
-then
-    echo "WARNING: nvidia-docker not found. Nvidia drivers may not work." >&2
+    echo "Docker found." >&2
     DOCKER_CMD=docker
 else
-     echo "${ERROR_PREFIX} docker or nvidia-docker not found. Aborting." >&2
+     echo "${ERROR_PREFIX} docker not found. Aborting." >&2
     exit 1
 fi
 

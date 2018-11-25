@@ -45,8 +45,9 @@ to the host.
 
 To run the DFL bot:
 ```
-python3 ./run_agentFCL.py learning_rate
+python3 ./run_agentFCL.py 0.0001
 ```
+where 0.0001 is the learning rate.
 
 Which runs a deathmatch for the length of the time specified 
 in `host/host.py`, and will write to 3 files:
