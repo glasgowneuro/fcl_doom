@@ -10,6 +10,8 @@ if [ ! -d "$DIRECTORY" ]; then
   exit 1
 fi
 
+cp basic-multispawnmultiammo1.wad ${DIRECTORY}
+
 echo "Entering directory: ${DIRECTORY}"
 cd $DIRECTORY
 
