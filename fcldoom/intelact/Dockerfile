@@ -1,12 +1,12 @@
 FROM ubuntu:18.04
 
 # Cuda 7.5 with cudnn 4.0.7
-FROM nvidia/cuda:7.5-devel
+#FROM nvidia/cuda:7.5-devel
 
-RUN echo "deb http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1404/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
-ENV CUDNN_VERSION 4
-RUN apt-get update && apt-get install -y --no-install-recommends \
-            libcudnn4=4.0.7 libcudnn4-dev=4.0.7
+#RUN echo "deb http://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1404/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
+#ENV CUDNN_VERSION 4
+#RUN apt-get update && apt-get install -y --no-install-recommends \
+#            libcudnn4=4.0.7 libcudnn4-dev=4.0.7
 
 # ViZdoom dependencies
 RUN apt-get update && apt-get install -y \
@@ -30,6 +30,8 @@ RUN apt-get update && apt-get install -y \
     libglu1-mesa-dev \
     libwildmidi-dev \
     libzmq3-dev \
+    mesa-utils \
+    libgl1-mesa-glx \
     nano \
     nasm \
     pkg-config \
@@ -51,14 +53,12 @@ RUN apt-get update && apt-get install -y python-dev python python-pip
 RUN pip install pip --upgrade
 
 
-
+RUN pip --no-cache-dir install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.9.0-cp27-none-linux_x86_64.whl
 
 # Vizdoom and other pip packages if needed
 RUN pip --no-cache-dir install \
     git+https://github.com/mwydmuch/ViZDoom
 
-RUN pip --no-cache-dir install --upgrade --ignore-installed  \
-    https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow-0.9.0-cp27-none-linux_x86_64.whl
 RUN pip --no-cache-dir install opencv-python termcolor tqdm subprocess32 msgpack-python msgpack-numpy
 
 
