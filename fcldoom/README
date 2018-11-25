@@ -1,17 +1,13 @@
-This folder contains code that will allow you run run a Vizdoom agent against pretrained bots from Facebook and Intel. 
+To generate the results in the SAB paper, you will need the following steps: 
 
-To generate the results in the paper, you will need the following steps: 
-
-Check out https://github.com/mihahauke/vizdoom_cig2017
-
-- you will need to be able to run the host, and the bot in the folder 'intelact'. The README gives install instructions; you will need to install Docker with
+Clone https://github.com/mihahauke/vizdoom_cig2017
 
 apt install docker.io
 systemctl start docker
 systemctl enable docker
-and also nvidia-docker if you wish to use your GPU for the bots in folders intelact or F1.
+and also nvidia-docker if you wish to use your GPU for the bots in folders intelact.
 
-Edit /etc/group and add your name to the group "docker".
+Edit /etc/group and add your username to the group "docker".
 
 ./build.sh intelact
 ./build.sh host
