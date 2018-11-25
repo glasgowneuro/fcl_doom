@@ -7,7 +7,7 @@ from tabulate import tabulate
 from warnings import warn
 
 MAX_MAP = 5
-MAX_PLAYERS = 1
+MAX_PLAYERS = 15
 MAX_TIMELIMIT = 999
 DEFAULT_TIMELIMIT = 10
 WAD_FILE = "cig2017.wad"
@@ -20,7 +20,7 @@ if __name__ == "__main__":
                         default=0, type=int,
                         help='number of bots to add [0,15]')
     parser.add_argument('-p', '--players', metavar="PLAYERS_NUM", dest='players_num',
-                        default=1, type=int,
+                        default=2, type=int,
                         help='number of players [1,16]')
     parser.add_argument('-m', '--map', metavar="MAP", dest='map',
                         default=1, type=int,
