@@ -1,39 +1,61 @@
+# FCL DOOM
+
 To generate the results in the SAB paper, you will need the following steps: 
 
-Clone https://github.com/mihahauke/vizdoom_cig2017
-
+```
 apt install docker.io
 systemctl start docker
 systemctl enable docker
-and also nvidia-docker if you wish to use your GPU for the bots in folders intelact.
+```
+and also `nvidia-docker` if you wish to use your GPU
+for the bots in folders intelact.
 
-Edit /etc/group and add your username to the group "docker".
+Edit `/etc/group` and add your username to the group "docker".
 
+Build these two dockers:
+```
 ./build.sh intelact
 ./build.sh host
+```
 
 Assuming this succeeded, you then run the host, followed by the bots:
+```
 ./run.sh host
 ./run.sh intelact
+```
 
-Clone vizdoom from:
+Our own FCL agent runs just in the Linux system itself.
+Clone vizdoom with:
+```
 git clone https://github.com/mwydmuch/ViZDoom.git
+```
 
 Install it with:
+```
 sudo pip3 install .
+```
 
 To run the DFL bot:
-cd dfldoom
+```
 python3 run_agentFCL.py learning_rate
+```
 
-Which run a deathmatch for the length of time specified in ../host/host.py, and will write to 3 files: 
+Which runs a deathmatch for the length of the time specified 
+in `host/host.py`, and will write to 3 files:
+```
 KD.txt
 wtDist.txt
 FCLOutput.txt
+```
 
-The first logs a timestamp each time the bot is killed. To calculate a KD ratio, you will need to edit ../intelact/IntealAct_track2/run_agent.py to write the corresponding death events for the intel bot - or whichever one you are playing against. 
-wtDist.txt logs the average Euclidean distance of the weights from their initial values, per layer.
-FCLOutput.txt logs various measures: feedback error, bot steering action, health. See the code. 
+The first logs a timestamp each time the bot is killed.
+To calculate a KD ratio, you will need to edit
+`intelact/IntealAct_track2/run_agent.py` to write
+the corresponding death events for the intel bot.
+`wtDist.txt` logs the average Euclidean distance
+of the weights from their initial values, per layer.
+`FCLOutput.txt` logs various measures:
+feedback error, bot steering action, health. See the code. 
 
 
 If you wish to experiment further:
