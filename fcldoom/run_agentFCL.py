@@ -4,7 +4,6 @@ import cv2
 import sys
 import os
 sys.path.append('./agent')
-sys.path.append("../.")
 from agent.doom_simulator import DoomSimulator
 import feedback_closedloop_learning
 import threading
@@ -25,7 +24,7 @@ nOut = 6
 minT = 5
 maxT = 10
 
-outFile = open("DFLOutput.txt", "w")
+outFile = open("FCLOutput.txt", "w")
 wtdistFile = open("wtDist.txt", "w")
 
 FCLNet = feedback_closedloop_learning.FeedbackClosedloopLearning(width * height, nHidden, nOut, nFiltersInput, nFiltersHidden, minT, maxT)
@@ -177,7 +176,7 @@ def savePosImage(curr_step, centre, x1, y1, x2, y2, _img, myFile, width, height)
 
 
 def saveImage(curr_step, _img):
-    cv2.imwrite("/tmp/DFL-" + str(curr_step) + ".jpg", _img)
+    cv2.imwrite("/tmp/FCL-" + str(curr_step) + ".jpg", _img)
 
 
 def saveNegImage(curr_step, img2, myFile, width, height):
@@ -421,4 +420,4 @@ if __name__ == '__main__':
         print("learning rate: ", str(sys.argv[1]))
         main(sys.argv[1])
     else:
-        print("usage: run_agentDFL learning_rate")
+        print("usage: run_agentFCL learning_rate")

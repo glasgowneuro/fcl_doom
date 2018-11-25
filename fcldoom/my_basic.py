@@ -10,8 +10,6 @@ from random import choice
 from time import sleep
 from matplotlib import pyplot as plt
 
-sys.path.append('../')
-
 import numpy as np
 import cv2
 import deep_feedback_learning

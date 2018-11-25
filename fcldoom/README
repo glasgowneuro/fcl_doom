@@ -29,11 +29,11 @@ python3 run_agentFCL.py learning_rate
 Which run a deathmatch for the length of time specified in ../host/host.py, and will write to 3 files: 
 KD.txt
 wtDist.txt
-DFLOutput.txt
+FCLOutput.txt
 
 The first logs a timestamp each time the bot is killed. To calculate a KD ratio, you will need to edit ../intelact/IntealAct_track2/run_agent.py to write the corresponding death events for the intel bot - or whichever one you are playing against. 
 wtDist.txt logs the average Euclidean distance of the weights from their initial values, per layer.
-DFLOutput.txt logs various measures: feedback error, bot steering action, health. See the code. 
+FCLOutput.txt logs various measures: feedback error, bot steering action, health. See the code. 
 
 
 If you wish to experiment further:
