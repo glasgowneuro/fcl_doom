@@ -3,6 +3,8 @@
 This is a demo where FCL fights against an Intel agent from the
 vizdoom competition.
 
+## Prequisites
+
 ```
 apt install docker.io
 systemctl start docker
@@ -11,20 +13,14 @@ systemctl enable docker
 
 Edit `/etc/group` and add your username to the group "docker".
 
+## Building
+
 Build these two dockers:
 ```
 ./build.sh intelact
 ./build.sh host
 ```
 
-Assuming this succeeded, you then run the host, followed by the bots:
-```
-./run.sh host
-./run.sh intelact
-```
-best approach is to run this in two separate terminal windows.
-
-Our own FCL agent runs just in the Linux system itself.
 Clone vizdoom with:
 ```
 git clone https://github.com/mwydmuch/ViZDoom.git
@@ -34,6 +30,18 @@ Install it with:
 ```
 sudo pip3 install .
 ```
+
+## Running the demo
+
+First run the host, followed by the bots:
+```
+./run.sh host
+./run.sh intelact
+```
+The best approach is to run this in two separate terminal windows.
+
+Our own FCL agent runs just in the Linux system itself and connects
+to the host.
 
 To run the DFL bot:
 ```
