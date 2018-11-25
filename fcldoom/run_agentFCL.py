@@ -1,7 +1,6 @@
 from __future__ import print_function
 import numpy as np
 import cv2
-import tensorflow as tf
 import sys
 import os
 sys.path.append('./agent')
@@ -26,8 +25,8 @@ nOut = 6
 minT = 5
 maxT = 10
 
-outFile = open("/home/paul/Dev/GameAI/vizdoom_cig2017/DFLOutput.txt", "w")
-wtdistFile = open("/home/paul/Dev/GameAI/vizdoom_cig2017/wtDist.txt", "w")
+outFile = open("DFLOutput.txt", "w")
+wtdistFile = open("wtDist.txt", "w")
 
 FCLNet = feedback_closedloop_learning.FeedbackClosedloopLearning(width * height, nHidden, nOut, nFiltersInput, nFiltersHidden, minT, maxT)
 # init the weights
@@ -139,7 +138,7 @@ def getColourImbalance(img, colour):
     return 1.
 
 def getMaxColourPos(img, colour, step):
-    cv2.imwrite("/home/paul/tmp/Images/Positive/col-" + str(step) + ".jpg", img)
+    cv2.imwrite("/tmp/col-" + str(step) + ".jpg", img)
 
     img = np.array(img, dtype='float64')
     width = int(img.shape[1])
@@ -150,7 +149,7 @@ def getMaxColourPos(img, colour, step):
     diff[:,:,1] = colour[1]
     diff[:,:,2] = colour[2]
     diff = np.absolute(np.add(diff, (-1*img)))
-    cv2.imwrite("/home/paul/tmp/Images/Positive/diff-" + ".jpg", diff)
+    cv2.imwrite("/tmp/diff-" + ".jpg", diff)
     diff = np.sum(diff, axis=2)
 
     indx = np.argmin(diff)
@@ -168,23 +167,23 @@ def getMaxColourPos(img, colour, step):
 
 def savePosImage(curr_step, centre, x1, y1, x2, y2, _img, myFile, width, height):
 #    print ("img shape: ", img2.shape)
-    myFile.write("/home/paul/tmp/Images/" + str(curr_step) + ".jpg"
+    myFile.write("/tmp/" + str(curr_step) + ".jpg"
                  + " 1"
                  + " " + str(x1) + " " + str(y1)
                  + " " + str(x2) + " " + str(y2) + "\n")
     img = np.zeros(_img.shape,dtype=np.uint8)
     outImage = Image.fromarray(img)
-    outImage.save("/home/paul/tmp/Images/Positive/" + str(curr_step) + ".jpg")
+    outImage.save("/tmp/" + str(curr_step) + ".jpg")
 
 
 def saveImage(curr_step, _img):
-    cv2.imwrite("/home/paul/tmp/Images/Positive/DFL-" + str(curr_step) + ".jpg", _img)
+    cv2.imwrite("/tmp/DFL-" + str(curr_step) + ".jpg", _img)
 
 
 def saveNegImage(curr_step, img2, myFile, width, height):
-    myFile.write("/home/paul/tmp/Images/" + str(curr_step) + ".jpg\n")
+    myFile.write("/tmp/" + str(curr_step) + ".jpg\n")
     img = Image.fromarray(img2)
-    img.save("/home/paul/tmp/Images/Negative/" + str(curr_step) + ".jpg")
+    img.save("/tmp/" + str(curr_step) + ".jpg")
 
 
 def main(learning_rate_):
@@ -300,7 +299,7 @@ def main(learning_rate_):
                     iter = 0
 
                 if (simulator._game.is_player_dead()) and killed == False:
-                    g = open("/home/paul/Dev/GameAI/vizdoom_cig2017/KD.txt", "a")
+                    g = open("KD.txt", "a")
                     s = "0 " + str(curr_step) + " " + str(datetime.now().timestamp()) + "\n"
 
                     g.write(s)
@@ -325,10 +324,10 @@ def main(learning_rate_):
 #                        cheatInputs = np.copy(stateImg)
 #                        cv2.rectangle(cheatInputs, (bottomLeft[0], bottomLeft[1]), (topRight[0], topRight[1]), (0, 0, 255), 2)
 #                        cv2.rectangle(cheatInputs, (384, 0), (510, 128), (0, 255, 0), 3)
-#                        cv2.imwrite("/home/paul/tmp/Backup/rect-" + str(curr_step) + ".jpg", cheatInputs)
+#                        cv2.imwrite("/tmp/rect-" + str(curr_step) + ".jpg", cheatInputs)
 
                     rawInputs = np.array(np.sum(stateImg, axis=2) / 3)
-#                    cv2.imwrite("/home/paul/tmp/Backup/raw-" + str(curr_step) + ".jpg", rawInputs)
+#                    cv2.imwrite("/tmp/raw-" + str(curr_step) + ".jpg", rawInputs)
 
                     input_buff[:] = np.ndarray.flatten(rawInputs)
                     input_buff = input_buff - np.mean(input_buff)
