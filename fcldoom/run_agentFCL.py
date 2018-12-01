@@ -314,7 +314,7 @@ def main(learning_rate_):
                     icoInSteer = 0.
 
                     saveImage(curr_step, stateImg)
-                    centre, bottomLeft, topRight, colourStrength = getMaxColourPos(stateImg, [255, 0, 0], curr_step)
+                    centre, bottomLeft, topRight, colourStrength = getMaxColourPos(stateImg, [0, 0, 255], curr_step)
                     colourSteer = imgCentre[0]
 
                     if(len(bottomLeft)>0 and len(topRight)>0 and ((topRight[0] - bottomLeft[0]) < width/3) and ((topRight[1] - bottomLeft[1]) < height/2)):
