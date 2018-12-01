@@ -108,7 +108,7 @@ def plotWeights():
             plt.draw()
             plt.pause(5.0)
 
-
+# uncomment if you want to plot the weights as they evolve
 #t1 = threading.Thread(target=plotWeights)
 #t1.start()
 
@@ -165,7 +165,6 @@ def getMaxColourPos(img, colour, step):
 
 
 def savePosImage(curr_step, centre, x1, y1, x2, y2, _img, myFile, width, height):
-#    print ("img shape: ", img2.shape)
     myFile.write("/tmp/" + str(curr_step) + ".jpg"
                  + " 1"
                  + " " + str(x1) + " " + str(y1)
@@ -210,7 +209,6 @@ def main(learning_rate_):
     print('started simulator')
 
     modelDir = os.path.join(os.path.expanduser("~"), "Dev/GameAI/vizdoom_cig2017/icodoom/ICO1/Models")
-
 
     img_buffer = np.zeros(
         (historyLen, simulator.resolution[1], simulator.resolution[0], num_channels), dtype='uint8')
@@ -320,13 +318,8 @@ def main(learning_rate_):
                     if(len(bottomLeft)>0 and len(topRight)>0 and ((topRight[0] - bottomLeft[0]) < width/3) and ((topRight[1] - bottomLeft[1]) < height/2)):
                         colourSteer = bottomLeft[0] + int(0.5 * (topRight[0] - bottomLeft[0]))
                         shoot = 1
-#                        cheatInputs = np.copy(stateImg)
-#                        cv2.rectangle(cheatInputs, (bottomLeft[0], bottomLeft[1]), (topRight[0], topRight[1]), (0, 0, 255), 2)
-#                        cv2.rectangle(cheatInputs, (384, 0), (510, 128), (0, 255, 0), 3)
-#                        cv2.imwrite("/tmp/rect-" + str(curr_step) + ".jpg", cheatInputs)
 
                     rawInputs = np.array(np.sum(stateImg, axis=2) / 3)
-#                    cv2.imwrite("/tmp/raw-" + str(curr_step) + ".jpg", rawInputs)
 
                     input_buff[:] = np.ndarray.flatten(rawInputs)
                     input_buff = input_buff - np.mean(input_buff)
@@ -375,7 +368,6 @@ def main(learning_rate_):
 
                     netErr[:] = 0.
                     diff_theta = diff_theta + reflexGain * colourStrength * delta
-#                    diff_z = -1.
 
                     curr_act = np.zeros(7).tolist()
                     curr_act[0] = 0
@@ -390,13 +382,16 @@ def main(learning_rate_):
 
             if (curr_step % epoch == 0):
 
+                # uncomment to write models to file
+                """
                 if not os.path.exists("Models"):
                     os.makedirs("Models")
-#                FCLNet.saveModel("Models/BP-" + str(curr_step) + ".txt")
+                FCLNet.saveModel("Models/BP-" + str(curr_step) + ".txt")
 
                 file = open("Models/checkpoint", 'w')
                 file.write("Models/BP-" + str(curr_step) + ".txt")
                 file.close()
+                """
 
             img, meas, rwrd, term = simulator.step(curr_act)
             if (not (meas is None)) and meas[0] > 30.:
