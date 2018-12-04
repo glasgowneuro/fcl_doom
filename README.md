@@ -1,4 +1,4 @@
-# Feedback Closed Loop Learning demos
+# Feedforward Closed Loop Learning demos
 
 ## fcldoom
 
