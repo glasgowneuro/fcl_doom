@@ -93,7 +93,7 @@ public:
 		pred = new double[nInputs];
 		err = new double[nNeuronsInHiddenLayers[0]];
 
-		// setting up deep feedback learning
+		// setting up deep feedforward learning
 		fcl = new FeedforwardClosedloopLearning(
 			nInputs,
 			nNeuronsInHiddenLayers,

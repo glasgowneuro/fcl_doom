@@ -4,6 +4,7 @@ import cv2
 import sys
 import os
 sys.path.append('./agent')
+sys.path.append('/home/paul/Dev/feedforward_closedloop_learning')
 from agent.doom_simulator import DoomSimulator
 import feedforward_closedloop_learning
 import threading
@@ -30,7 +31,7 @@ wtdistFile = open("wtDist.txt", "w")
 FCLNet = feedforward_closedloop_learning.FeedforwardClosedloopLearning(width * height, nHidden, nOut, nFiltersInput, nFiltersHidden, minT, maxT)
 # init the weights
 # FCLNet.getLayer(0).setConvolution(width, height)
-FCLNet.initWeights(1., feedback_closedloop_learning.Neuron.MAX_OUTPUT_RANDOM)
+FCLNet.initWeights(1., feedforward_closedloop_learning.Neuron.MAX_OUTPUT_RANDOM)
 print ("Initialised weights")
 for i in range(len(nHidden)):
     print ("hidden ", i, ": ", nHidden[i], file=outFile)
