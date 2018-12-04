@@ -46,7 +46,7 @@ protected:
 
 	double learningRate = 0.0001;
 	
-	FeedbackClosedloopLearning* fcl = NULL;
+	FeedforwardClosedloopLearning* fcl = NULL;
 
 	double* pred = NULL;
 	double* err = NULL;
@@ -94,7 +94,7 @@ public:
 		err = new double[nNeuronsInHiddenLayers[0]];
 
 		// setting up deep feedback learning
-		fcl = new FeedbackClosedloopLearning(
+		fcl = new FeedforwardClosedloopLearning(
 			nInputs,
 			nNeuronsInHiddenLayers,
 			nHiddenLayers,
