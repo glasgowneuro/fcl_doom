@@ -5,7 +5,7 @@ import sys
 import os
 sys.path.append('./agent')
 from agent.doom_simulator import DoomSimulator
-import feedback_closedloop_learning
+import feedforward_closedloop_learning
 import threading
 from matplotlib import pyplot as plt
 from datetime import datetime
@@ -27,7 +27,7 @@ maxT = 10
 outFile = open("FCLOutput.txt", "w")
 wtdistFile = open("wtDist.txt", "w")
 
-FCLNet = feedback_closedloop_learning.FeedbackClosedloopLearning(width * height, nHidden, nOut, nFiltersInput, nFiltersHidden, minT, maxT)
+FCLNet = feedforward_closedloop_learning.FeedforwardClosedloopLearning(width * height, nHidden, nOut, nFiltersInput, nFiltersHidden, minT, maxT)
 # init the weights
 # FCLNet.getLayer(0).setConvolution(width, height)
 FCLNet.initWeights(1., feedback_closedloop_learning.Neuron.MAX_OUTPUT_RANDOM)
