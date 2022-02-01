@@ -4,7 +4,6 @@ import cv2
 import sys
 import os
 sys.path.append('./agent')
-sys.path.append('/home/paul/Dev/feedforward_closedloop_learning')
 from agent.doom_simulator import DoomSimulator
 import feedforward_closedloop_learning
 import threading
@@ -17,31 +16,25 @@ width = 160
 widthIn = 160
 height = 120
 heightIn = 120
-nFiltersInput = 0
-nFiltersHidden = 0
-nHidden = [5]
 nOut = 6
-# nFiltersHidden = 0 means that the layer is linear without filters
-minT = 5
-maxT = 10
+neuronsPerLayer = [5,nOut]
 
 outFile = open("FCLOutput.txt", "w")
 wtdistFile = open("wtDist.txt", "w")
 
-FCLNet = feedforward_closedloop_learning.FeedforwardClosedloopLearning(width * height, nHidden, nOut, nFiltersInput, nFiltersHidden, minT, maxT)
+FCLNet = feedforward_closedloop_learning.FeedforwardClosedloopLearning(width * height, neuronsPerLayer)
 # init the weights
 # FCLNet.getLayer(0).setConvolution(width, height)
 FCLNet.initWeights(1., feedforward_closedloop_learning.Neuron.MAX_OUTPUT_RANDOM)
 print ("Initialised weights")
-for i in range(len(nHidden)):
-    print ("hidden ", i, ": ", nHidden[i], file=outFile)
+for i in range(len(neuronsPerLayer)):
+    print ("hidden ", i, ": ", neuronsPerLayer[i], file=outFile)
 #print("learning rate: ", learningRate, file=outFile)
 
 FCLNet.setBias(1)
 FCLNet.setMomentum(0.5)
 random.seed(datetime.now())
 FCLNet.seedRandom(np.random.randint(low=0, high=999999))
-FCLNet.setUseDerivative(0)
 
 preprocess_input_images = lambda x: x / 255. - 0.5
 
@@ -256,7 +249,7 @@ def main(learning_rate_):
     target_buff = np.zeros((1,1))
     meas_buff = np.zeros((1,simulator.num_meas))
     netOut = 0.
-    netErr = np.zeros(nHidden[0])
+    netErr = np.zeros(neuronsPerLayer[0])
     delta = 0.
     shoot = 0
     wtDist = np.zeros(FCLNet.getNumLayers())
